@@ -147,6 +147,8 @@ void loop() {
 
   buttonState = digitalRead(powerButtonPin);
 
+  serial_processing();
+
   // do stuff only when the CRT is on
   if ( externalCircuitState == HIGH ) {
 
@@ -154,7 +156,6 @@ void loop() {
     elapsedTime = currentTime - startTime;
 
 
-    serial_processing();
 
 
     //increment vsyncDetect everytime vsync is detected
@@ -251,105 +252,120 @@ void handleSerial(char incoming) {
 
   int index = -1;
   bool increment = true;
-  switch (incoming) {
-    case 'a'://move left
-      //moveHorizontal(+1);
-      index = IVAD_SETTING_HORIZONTAL_POS;
-      break;
-    case 's'://move right
-      //moveHorizontal(-1);
-      index = IVAD_SETTING_HORIZONTAL_POS;
-      increment = false;
-      break;
-    case 'w'://move up
-      //moveVertical(-1);
-      index = IVAD_SETTING_VERTICAL_POS;
-      increment = false;
-      break;
-    case 'z'://move down
-      //moveVertical(+1);
-      index = IVAD_SETTING_VERTICAL_POS;
-      break;
-    case 'd'://make skinnier
-      //changeWidth(+1);
-      index = IVAD_SETTING_WIDTH;
-      break;
-    case 'f'://make fatter
-      //changeWidth(-1);
-      index = IVAD_SETTING_WIDTH;
-      increment = false;
-      break;
-    case 'r'://make taller
-      //changeHeight(+1);
-      index = IVAD_SETTING_HEIGHT;
-      break;
-    case 'c'://make shorter
-      //changeHeight(-1);
-      index = IVAD_SETTING_HEIGHT;
-      increment = false;
-      break;
-    case 'g'://decrease contrast
-      //changeContrast(-1);
-      index = IVAD_SETTING_CONTRAST;
-      increment = false;
-      break;
-    case 'h'://increase contrast
-      //changeContrast(+1);
-      index = IVAD_SETTING_CONTRAST;
-      break;
-    case 'j'://decrease brightness
-      //changeBrightness(-1);
-      index = IVAD_SETTING_BRIGHTNESS;
-      increment = false;
-      break;
-    case 'k'://increase brightness
-      // changeBrightness(+1);
-      index = IVAD_SETTING_BRIGHTNESS;
-      break;
-    case 'x'://tilt paralellogram left
-      //changeParallelogram(+1);
-      index = IVAD_SETTING_PARALLELOGRAM;
-      break;
-    case 'v'://tilt paralellogram right
-      //changeParallelogram(-1);
-      index = IVAD_SETTING_PARALLELOGRAM;
-      increment = false;
-      break;
-    case 'b'://keystone pinch top
-      //changeKeystone(-1);
-      index = IVAD_SETTING_KEYSTONE;
-      increment = false;
-      break;
-    case 'n'://keystone pinch bottom
-      //changeKeystone(+1);
-      index = IVAD_SETTING_KEYSTONE;
-      break;
-    case 't'://rotate left
-      //changeRotation(+1);
-      index = IVAD_SETTING_ROTATION;
-      break;
-    case 'y'://rotate right
-      //changeRotation(-1);
-      index = IVAD_SETTING_ROTATION;
-      increment = false;
-      break;
-    case 'u'://pincushion pull corners out
-      //changePincushion(-1);
-      index = IVAD_SETTING_PINCUSHION;
-      increment = false;
-      break;
-    case 'i'://pincushion pull corners in
-      //changePincushion(+1);
-      index = IVAD_SETTING_PINCUSHION;
-      break;
-    case 'p':
-      printCurrentSettings();
-      break;
-    case 'o'://power off
-      if ( externalCircuitState == HIGH ) {
-        externalCircuitOff();
-      }//end if
-      break;
+  if (externalCircuitState == HIGH) {
+    switch (incoming) {
+      case 'a':  //move left
+        //moveHorizontal(+1);
+        index = IVAD_SETTING_HORIZONTAL_POS;
+        break;
+      case 's':  //move right
+        //moveHorizontal(-1);
+        index = IVAD_SETTING_HORIZONTAL_POS;
+        increment = false;
+        break;
+      case 'w':  //move up
+        //moveVertical(-1);
+        index = IVAD_SETTING_VERTICAL_POS;
+        increment = false;
+        break;
+      case 'z':  //move down
+        //moveVertical(+1);
+        index = IVAD_SETTING_VERTICAL_POS;
+        break;
+      case 'd':  //make skinnier
+        //changeWidth(+1);
+        index = IVAD_SETTING_WIDTH;
+        break;
+      case 'f':  //make fatter
+        //changeWidth(-1);
+        index = IVAD_SETTING_WIDTH;
+        increment = false;
+        break;
+      case 'r':  //make taller
+        //changeHeight(+1);
+        index = IVAD_SETTING_HEIGHT;
+        break;
+      case 'c':  //make shorter
+        //changeHeight(-1);
+        index = IVAD_SETTING_HEIGHT;
+        increment = false;
+        break;
+      case 'g':  //decrease contrast
+        //changeContrast(-1);
+        index = IVAD_SETTING_CONTRAST;
+        increment = false;
+        break;
+      case 'h':  //increase contrast
+        //changeContrast(+1);
+        index = IVAD_SETTING_CONTRAST;
+        break;
+      case 'j':  //decrease brightness
+        //changeBrightness(-1);
+        index = IVAD_SETTING_BRIGHTNESS;
+        increment = false;
+        break;
+      case 'k':  //increase brightness
+        // changeBrightness(+1);
+        index = IVAD_SETTING_BRIGHTNESS;
+        break;
+      case 'x':  //tilt paralellogram left
+        //changeParallelogram(+1);
+        index = IVAD_SETTING_PARALLELOGRAM;
+        break;
+      case 'v':  //tilt paralellogram right
+        //changeParallelogram(-1);
+        index = IVAD_SETTING_PARALLELOGRAM;
+        increment = false;
+        break;
+      case 'b':  //keystone pinch top
+        //changeKeystone(-1);
+        index = IVAD_SETTING_KEYSTONE;
+        increment = false;
+        break;
+      case 'n':  //keystone pinch bottom
+        //changeKeystone(+1);
+        index = IVAD_SETTING_KEYSTONE;
+        break;
+      case 't':  //rotate left
+        //changeRotation(+1);
+        index = IVAD_SETTING_ROTATION;
+        break;
+      case 'y':  //rotate right
+        //changeRotation(-1);
+        index = IVAD_SETTING_ROTATION;
+        increment = false;
+        break;
+      case 'u':  //pincushion pull corners out
+        //changePincushion(-1);
+        index = IVAD_SETTING_PINCUSHION;
+        increment = false;
+        break;
+      case 'i':  //pincushion pull corners in
+        //changePincushion(+1);
+        index = IVAD_SETTING_PINCUSHION;
+        break;
+      case 'p':
+        printCurrentSettings();
+        break;
+      case 'o':  //power off
+        if (externalCircuitState == HIGH) {
+          externalCircuitOff();
+        }  //end if
+        break;
+    }
+  } else {
+    switch (incoming) {
+      case 'e':
+        if (externalCircuitState == LOW) {
+          Serial.print("Turn on\n");
+          externalCircuitOn();
+          buttonPressedTime = 0;
+          startTime = millis();
+          currentTime = millis();
+          vsyncDetect = vsync_off_time;
+        }
+        break;
+    }
   }
   //}
 
