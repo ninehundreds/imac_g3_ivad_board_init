@@ -352,12 +352,14 @@ void handleSerial(char incoming) {
           externalCircuitOff();
         }  //end if
         break;
+      case 'q':  //save settings
+          settings_store();
+        break;
     }
   } else {
     switch (incoming) {
-      case 'e':
+      case 'e': //turn on
         if (externalCircuitState == LOW) {
-          Serial.print("Turn on\n");
           externalCircuitOn();
           buttonPressedTime = 0;
           startTime = millis();
